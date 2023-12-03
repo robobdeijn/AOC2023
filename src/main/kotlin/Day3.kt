@@ -1,6 +1,4 @@
 import java.io.File
-import kotlin.math.abs
-import kotlin.math.log10
 
 fun main() {
     val partNumberSum = Schematic.create(File("src/main/resources/day3.txt").readLines()).partNumberSum()
@@ -28,8 +26,7 @@ class Schematic(private val parts: List<PartNumber>, private val symbols: List<S
 }
 
 class PartNumber(val number: Int, private val start: Coordinate) {
-    fun isAdjacent(coordinate: Coordinate) : Boolean = coordinate.x >= start.x -1 && coordinate.x <= (start.x + log10(abs(number.toDouble())).toInt() +1)
-                && coordinate.y >= start.y -1 && coordinate.y <= start.y + 1
+    fun isAdjacent(coordinate: Coordinate) : Boolean = coordinate.x >= start.x -1 && coordinate.x <= start.x + number.toString().length && coordinate.y >= start.y -1 && coordinate.y <= start.y + 1
 }
 
 data class Symbol(val value: Char, val coordinate: Coordinate)
