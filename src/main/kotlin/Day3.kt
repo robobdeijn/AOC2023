@@ -13,8 +13,8 @@ fun main() {
 class Schematic(val parts: List<PartNumber>, val symbols: List<Symbol>) {
     companion object Factory {
         fun create(schematicString: List<String>) : Schematic {
-            val partNumbers = schematicString.mapIndexed { y, s -> extractPartNumbers(y, s) }.flatten()
-            val syms = schematicString.mapIndexed { y, s -> extractSymbols(y, s) }.flatten()
+            val partNumbers = schematicString.flatMapIndexed() { y, s -> extractPartNumbers(y, s) }
+            val syms = schematicString.flatMapIndexed() { y, s -> extractSymbols(y, s) }
             return Schematic(partNumbers, syms);
         }
 
