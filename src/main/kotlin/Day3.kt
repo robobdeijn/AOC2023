@@ -36,16 +36,10 @@ class Schematic(val parts: List<PartNumber>, val symbols: List<Symbol>) {
             .sumOf { it[0].number * it[1].number }
     }
 
-    private fun partsAdjacentToSymbol(): List<PartNumber> {
-        return parts.filter { p -> symbols.any { p.isAdjacent(it.coordinate) } }
-    }
-
     fun partNumberSum() : Int {
-        return partsAdjacentToSymbol().sumOf { it.number }
+        return parts.filter { p -> symbols.any { p.isAdjacent(it.coordinate) } }.sumOf { it.number }
     }
 }
-
-data class Symbol(val value: Char, val coordinate: Coordinate)
 
 class PartNumber(val number: Int, val start: Coordinate) {
     fun isAdjacent(coordinate: Coordinate) : Boolean {
@@ -54,4 +48,5 @@ class PartNumber(val number: Int, val start: Coordinate) {
     }
 }
 
+data class Symbol(val value: Char, val coordinate: Coordinate)
 data class Coordinate (val x: Int, val y: Int)
