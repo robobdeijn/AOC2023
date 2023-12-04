@@ -1,13 +1,17 @@
 import java.io.File
 import kotlin.math.pow
+import kotlin.time.measureTime
 
 fun main() {
     val value =
         File("src/main/resources/day4.txt").useLines { l -> l.map { ScratchCard.create(it) }.sumOf { it.value() } }
     println("Total value: $value")
 
-    val cardCount = ScratchCardGame.create(File("src/main/resources/day4.txt").readLines()).getTotalScratchCardCount()
-    println("Total value: $cardCount")
+    println( measureTime {
+        val cardCount =
+            ScratchCardGame.create(File("src/main/resources/day4.txt").readLines()).getScratchcardCount()
+        println("Total number of scratch cards: $cardCount")
+    })
 }
 
 class ScratchCardGame(private val scratchCards: List<ScratchCard>) {
@@ -16,15 +20,19 @@ class ScratchCardGame(private val scratchCards: List<ScratchCard>) {
             ScratchCardGame(scratchCardString.map { ScratchCard.create(it) })
     }
 
-    fun getTotalScratchCardCount(): Int {
-        val indexToCards = scratchCards.map { scratchCard -> scratchCard.number to mutableListOf(scratchCard) }.toMap()
-        indexToCards.forEach { (_, scratchCardList) ->
-            scratchCardList.forEach { sc ->
-                (1..sc.winCount()).forEach { indexToCards[sc.number + it]?.add(scratchCards[sc.number + it -1]) }
-            }
+    fun getScratchcardCount() : Int {
+        val winCounts = scratchCards.map { scratchCard -> scratchCard.winCount() }
+        val processed = mutableListOf<Pair<Int, Int>>()
+
+        for ((index,value) in winCounts.withIndex()) {
+            fun previousCount() =
+                processed.filterIndexed { innerIndex, pair -> innerIndex + pair.first >= index }.sumOf { it.second }
+            processed.add(Pair(value, 1 + previousCount()))
         }
-        return indexToCards.values.flatten().size;
+
+        return processed.sumOf { it.second }
     }
+
 }
 
 class ScratchCard(val number: Int, private val winningNumbers: List<Int>, val actualNumbers: List<Int>) {
