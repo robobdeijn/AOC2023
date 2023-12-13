@@ -1,27 +1,14 @@
 import java.io.File
 
 fun main() {
-    println(Day13.create(File("src/main/resources/day13.txt").readLines()).solve1())
-    println(Day13.create(File("src/main/resources/day13.txt").readLines()).solve2())
+    println(Day13.create(File("src/main/resources/day13.txt").readText().split("\n\n")).solve1())
+    println(Day13.create(File("src/main/resources/day13.txt").readText().split("\n\n")).solve2())
 }
 
 class Day13(private val patterns: List<List<String>>) {
     companion object Factory {
         fun create(input: List<String>): Day13 {
-            val patterns = mutableListOf<MutableList<String>>()
-            var currentPattern = mutableListOf<String>()
-            for (line in input) {
-                if (line.isEmpty()) {
-                    patterns.add(currentPattern)
-                    currentPattern = mutableListOf()
-                } else {
-                    currentPattern.add(line)
-                }
-            }
-            if (currentPattern.isNotEmpty()) {
-                patterns.add(currentPattern)
-            }
-            return Day13(patterns)
+            return Day13(input.map { list -> list.split("\n").filter { it.isNotEmpty() } })
         }
     }
 
