@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.math.min
 
 fun main() {
     println(Day13.create(File("src/main/resources/day13.txt").readText().split("\n\n")).solve1())
@@ -27,14 +28,9 @@ class Day13(private val patterns: List<List<String>>) {
 
     private fun calculateRowsAboveMirror(pattern: List<String>, hasSmudge: Boolean): Int {
         for (index in pattern.indices) {
-            var above = pattern.take(index + 1)
-            var below = pattern.drop(index + 1).take(index + 1)
-            if (below.size > above.size) {
-                below = below.take(above.size)
-            }
-            if (above.size > below.size) {
-                above = above.drop(above.size - below.size)
-            }
+            val maxRows = min(index , pattern.size - (index + 2))
+            val above = pattern.slice(index downTo index - (maxRows))
+            val below = pattern.slice((index + 1)..index + 1 + maxRows)
             if (above.isNotEmpty() && isReflection(above, below, hasSmudge)) {
                 return index + 1
             }
@@ -42,7 +38,7 @@ class Day13(private val patterns: List<List<String>>) {
         return 0
     }
 
-    private fun isReflection(above: List<String>, below: List<String>, hasSmudge: Boolean): Boolean = above.indices.map { above.reversed()[it].charDiffs(below[it]) }.sumOf { it } == (if(hasSmudge) 1 else 0)
+    private fun isReflection(above: List<String>, below: List<String>, hasSmudge: Boolean): Boolean = above.indices.map { above[it].charDiffs(below[it]) }.sumOf { it } == (if(hasSmudge) 1 else 0)
 
     private fun transpose(pattern: List<String>): List<String> {
         val twoDimensionalCharArray = pattern.map { it.toCharArray() }.toTypedArray()
